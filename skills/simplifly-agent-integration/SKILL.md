@@ -1,6 +1,6 @@
 ---
 name: simplifly-agent-integration
-description: Use this skill when integrating any agent with Simplifly MCP tools, building a Simplifly-powered travel assistant, or defining general Simplifly tool-use, safety, confirmation, hidden-field, raw-JSON, and user-facing output rules. This is a global integration policy skill, not a consumer workflow skill. Use workflow skills such as simplifly-flight-shopping, simplifly-flight-booking, and simplifly-flight-aftercare for concrete search, booking, payment, refund, change, and order tasks.
+description: "Use this skill only for technical integration work: building or configuring a Simplifly-powered agent, writing system prompts or shared agent policy, designing common MCP tool-use rules, or defining global safety, confirmation, hidden-field, raw-JSON, signing, and user-facing output rules. This is a global integration policy skill, not a consumer workflow skill. Do not use it merely because a normal user mentions Simplifly MCP tools. Use workflow skills such as simplifly-flight-shopping, simplifly-flight-booking, and simplifly-flight-aftercare for concrete search, booking, payment, refund, change, and order tasks."
 ---
 
 # Simplifly Agent Integration

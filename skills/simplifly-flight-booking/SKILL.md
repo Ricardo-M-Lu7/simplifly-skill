@@ -168,6 +168,8 @@ When calling the tool internally:
 
 After order creation, call or use `flight_order_detail` to show the current order status when useful.
 
+Use `flight_order_detail` in this skill only for status checks inside the create-order or payment flow. Independent order lookup, after-sales order status questions, cancellations, refunds, changes, and itinerary downloads belong to `simplifly-flight-aftercare`.
+
 ## Payment Safety
 
 Never pay automatically.
