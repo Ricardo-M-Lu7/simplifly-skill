@@ -15,7 +15,9 @@ This skill does not replace workflow skills.
 - Use `simplifly-flight-booking` for price verification, passenger collection, order creation, and payment.
 - Use `simplifly-flight-aftercare` for order lookup, cancellation, refund, change, and itinerary workflows.
 
-If a consumer workflow skill applies, follow that workflow skill for task-specific steps. Use this skill for global Simplifly MCP safety rules.
+If a consumer workflow skill applies, follow that workflow skill for task-specific steps, field lists, defaults, and output format. Use this skill only for global Simplifly MCP safety rules.
+
+Do not let this integration skill override workflow-specific rules. For example, passenger collection format, domestic ID-card fields, international passport fields, and contact defaults are owned by `simplifly-flight-booking`.
 
 ## MCP Prompt Independence
 
@@ -80,6 +82,28 @@ Never show these fields to normal users:
 - raw MCP JSON
 - authentication, signature, or internal network details
 
+## Local Signing
+
+For local Simplifly signed requests, use `scripts/local_sign.sh`.
+
+The script reads local configuration from environment variables:
+
+- `CODE`
+- `API_KEY`
+
+It generates:
+
+- `TS`: current UTC Unix timestamp in seconds, unless `TS` is already set
+- `SIG`: SHA1 hex digest of `${CODE}${TS}${API_KEY}`
+
+Example local invocation:
+
+```bash
+CODE="your-code" API_KEY="your-api-key" scripts/local_sign.sh
+```
+
+Do not place real `CODE` or `API_KEY` values in `SKILL.md`, examples, logs, or user-facing messages. Do not expose raw signatures to normal users unless the user is explicitly doing technical integration work.
+
 It is safe to show user-facing business information when returned:
 
 - airline and flight number
@@ -100,6 +124,7 @@ It is safe to show user-facing business information when returned:
 For normal consumers, respond in Simplified Chinese by default.
 
 - Use natural consumer-facing language.
+- For passenger information collection, follow `simplifly-flight-booking` formatting. Do not use raw form templates, fenced code blocks, or generic blank forms unless the workflow skill explicitly asks for them.
 - Do not expose tool names, MCP field names, or raw JSON unless the user explicitly asks for technical details.
 - Summarize tool results. Do not paste raw API responses.
 - If baggage, refund, change, ticketing, or policy details are missing from a tool result, say the information was not returned. Do not invent it.
@@ -183,4 +208,3 @@ Before using any Simplifly MCP tool, check:
 - Is the response in natural Simplified Chinese for normal users?
 - Are missing tool fields reported as missing instead of invented?
 - Is personal information being collected only at the correct workflow stage?
-

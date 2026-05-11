@@ -1,6 +1,6 @@
 ---
 name: simplifly-flight-shopping
-description: Use this skill whenever a user asks to search, compare, recommend, filter, or choose flights with Simplifly MCP tools. Always call flight_search for normal flight searches, show multiple options labeled F1-F5, and ask the user to reply with an option label to confirm real-time price. For Codex, web chat, Markdown-capable consoles, or local testing, format F1-F5 flight options as a Markdown comparison table with columns for option, flight, route/time, duration, price, and baggage; for QQ or plain chat channels, use compact plain text. Do not ask the user to provide a flight number after search results. Do not create orders or discuss payment in this shopping step. Use this skill even if Simplifly MCP prompts are not loaded.
+description: Use this skill whenever a user asks to search, compare, recommend, filter, or choose flights with Simplifly MCP tools. Always call flight_search for normal flight searches, show multiple options labeled F1-F5, and ask the user to reply with an option label to confirm real-time price. For Codex, OpenClaw, QQBot, web chat, Markdown-capable consoles, or local testing, format F1-F5 flight options as a Markdown comparison table with columns for option, flight, itinerary, time, cabin, price, and baggage; only use compact plain text for channels known to render tables poorly. Do not ask the user to provide a flight number after search results. Do not create orders or discuss payment in this shopping step. Use this skill even if Simplifly MCP prompts are not loaded.
 ---
 
 # Simplifly Flight Shopping
@@ -85,12 +85,14 @@ Never ask the user to provide a flight number after showing search results; pres
 
 Choose the output format by channel:
 
-- For QQ, SMS, WhatsApp, or other plain chat channels, avoid Markdown tables because they often render poorly. Prefer compact plain-text blocks.
-- For Codex, web chat, Markdown-capable consoles, or local testing, use a Markdown comparison table by default.
+- For Codex, OpenClaw, QQBot, web chat, Markdown-capable consoles, or local testing, use a Markdown comparison table by default.
+- For SMS, WhatsApp, or channels known to render Markdown tables poorly, use compact plain-text blocks.
 - If the channel is unclear, use a Markdown comparison table unless there is a known plain-chat limitation.
-- Do not output bare paragraph blocks for Markdown-capable channels.
+- Do not output bare paragraph blocks for OpenClaw, QQBot, Codex, or Markdown-capable channels.
+- For table output, prefer these columns: `选项`, `航班`, `行程`, `时间`, `舱位`, `价格`, `行李`.
+- Put the recommendation summary below the table in 2-3 short lines, then ask the user to reply with an option label such as `F1`.
 
-Plain chat example:
+Plain chat fallback example:
 
 - `F1 推荐｜川航 3U8830｜PEK → CKG → BKK`
 - `时间：10:55 → 18:55｜约 9小时｜1次中转`
@@ -100,10 +102,10 @@ Markdown-capable example:
 
 查到了，按 **2026-05-09 北京到广州，1位成人，经济舱**，下面都是直飞：
 
-| 选项 | 航班 | 起降 | 时长 | 价格 | 行李 |
-|---|---|---|---|---:|---|
-| F1 | 东方航空 MU6303 | 大兴 PKX 08:15 → 广州 CAN 11:35 | 3小时20分 | ¥870 | 手提8kg，托运20kg |
-| F2 | 海南航空 HU7815 | 首都 PEK 20:30 → 广州 CAN 23:55 | 3小时25分 | ¥1120 | 手提7kg，托运20kg |
+| 选项 | 航班 | 行程 | 时间 | 舱位 | 价格 | 行李 |
+|---|---|---|---|---|---:|---|
+| F1 | 东方航空 MU6303 | 大兴 PKX → 广州 CAN | 08:15-11:35 | 经济舱 | ¥870 | 手提8kg，托运20kg |
+| F2 | 海南航空 HU7815 | 首都 PEK → 广州 CAN | 20:30-23:55 | 经济舱 | ¥1120 | 手提7kg，托运20kg |
 
 我推荐 **F1**：最便宜，早上出发中午到，托运行李也有 20kg。
 

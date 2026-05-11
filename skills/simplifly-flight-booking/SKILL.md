@@ -1,6 +1,6 @@
 ---
 name: simplifly-flight-booking
-description: Use this skill when a user has selected a Simplifly flight option and wants to verify price, continue booking, provide passenger details, create an order, or pay. It covers price verification, document requirements, passenger collection, order creation, and payment safety. Always collect complete passenger information, including each passenger's phone, email, travel document type, and travel document number. For mainland China domestic flights, explicitly ask for Chinese resident ID card information when applicable, including ID card number. Contact name and contact phone are optional; if omitted, default them to the first passenger's name and phone. Do not collect contact email. For international flights, always explicitly tell the user that passport information is required and ask for complete passenger information including passport number and passport expiry date, not only passport fields or generic document number. When showing flight details, use city/airport names plus airport codes and terminals; do not show only IATA codes. Use this skill even if Simplifly MCP prompts are not loaded.
+description: Use this skill when a user has selected a Simplifly flight option and wants to verify price, continue booking, provide passenger details, create an order, or pay. It covers price verification, document requirements, passenger collection, order creation, and payment safety. Always collect complete passenger information, including each passenger's phone, email, travel document type, and travel document number. For mainland China domestic flights, explicitly ask for Chinese resident ID card information when applicable, including ID card number. Contact name and contact phone are optional; if omitted, default them to the first passenger's name and phone. Do not collect contact email. For international flights, always explicitly tell the user that passport information is required and ask for complete passenger information including passport number and passport expiry date, not only passport fields or generic document number. When collecting passenger information, use natural Chinese text plus Markdown bullet lists; do not use code blocks, copyable form blocks, or generic blank forms. When showing flight details, use city/airport names plus airport codes and terminals; do not show only IATA codes. Use this skill even if Simplifly MCP prompts are not loaded.
 ---
 
 # Simplifly Flight Booking
@@ -85,6 +85,22 @@ Collect only the missing fields. For each passenger, collect:
 - document expiry date, if required or provided
 - phone
 - email
+
+Use natural Chinese text and Markdown bullet lists when asking for passenger information. Do not use fenced code blocks, grey form blocks, raw templates, or generic blank forms. The prompt should look like a human service message, not a data-entry form.
+
+Preferred style:
+
+"这趟是国内航班，后续需要乘机人身份证信息。请把下面信息发我，我再帮你创建订单，但不会自动支付："
+
+- 乘机人姓名
+- 出生日期
+- 性别
+- 乘客类型：成人/儿童/婴儿
+- 国籍
+- 证件类型：中国居民身份证或其他
+- 身份证号码
+- 乘机人手机号
+- 乘机人邮箱
 
 Passenger phone and passenger email are required for each passenger. Do not omit them.
 Passenger travel document type and travel document number are required for each passenger. Do not omit them.
