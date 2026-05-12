@@ -1,8 +1,8 @@
 # Simplifly Skill
 
-Simplifly Skill is a set of Codex skill instructions for agents that work with Simplifly flight MCP tools. The skills define consumer-facing flight shopping, booking, payment safety, order aftercare, and shared integration policy.
+Simplifly Skill is a set of reusable agent instructions for agents that work with Simplifly flight MCP tools. The skills define consumer-facing flight shopping, booking, payment safety, order aftercare, and shared integration policy.
 
-The project is prompt and policy content, not a standalone flight API client. It assumes a Simplifly MCP server is connected by the host agent.
+The project is prompt and policy content, not a standalone flight API client. It assumes a Simplifly MCP server is connected by the host agent or application.
 
 ## What Is Included
 
@@ -15,7 +15,7 @@ The project is prompt and policy content, not a standalone flight API client. It
 
 ## Requirements
 
-- A Codex-compatible skills runtime.
+- An agent runtime that can load reusable instructions, skills, prompts, or policy files.
 - A Simplifly MCP server exposing the flight tools referenced by the skill files.
 - For local signed Simplifly requests, `shasum` and a POSIX-compatible shell.
 
@@ -23,19 +23,18 @@ The skills intentionally do not include API credentials, private endpoints, or l
 
 ## Installation
 
-Copy or symlink the skill directories into your Codex skills directory.
+Copy, symlink, or import the skill directories according to your agent framework's instruction-loading mechanism.
 
 ```bash
-: "${CODEX_HOME:?Set CODEX_HOME to your Codex configuration directory first}"
-mkdir -p "$CODEX_HOME/skills"
-cp -R skills/simplifly-* "$CODEX_HOME/skills/"
+mkdir -p /path/to/your-agent/skills
+cp -R skills/simplifly-* /path/to/your-agent/skills/
 ```
 
-If you use the default local Codex directory, you can set `CODEX_HOME="$HOME/.codex"` first, then run the commands above.
+If your framework does not support directory-based skills, import the relevant `SKILL.md` files as system instructions or workflow policy for your agent.
 
 ## Usage
 
-After installation, invoke the relevant skill from an agent task:
+After installation, load or invoke the relevant skill from an agent task:
 
 - Use `simplifly-flight-shopping` when the user wants to search, compare, filter, or choose flights.
 - Use `simplifly-flight-booking` after the user selects an option and wants to verify price, continue booking, create an order, or pay.
