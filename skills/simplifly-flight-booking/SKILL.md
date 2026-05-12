@@ -1,6 +1,6 @@
 ---
 name: simplifly-flight-booking
-description: Use this skill when a user has selected a Simplifly flight option and wants to verify price, continue booking, provide passenger details, create an order, or pay. It covers price verification, document requirements, passenger collection, order creation, and payment safety. Always collect complete passenger information, including each passenger's phone, email, travel document type, and travel document number. For mainland China domestic flights, explicitly ask for Chinese resident ID card information when applicable, including ID card number. Contact name and contact phone are optional; if omitted, default them to the first passenger's name and phone. Do not collect contact email. For international flights, always explicitly tell the user that passport information is required and ask for complete passenger information including passport number and passport expiry date, not only passport fields or generic document number. When collecting passenger information, use natural Chinese text plus Markdown bullet lists; do not use code blocks, copyable form blocks, or generic blank forms. When showing flight details, use city/airport names plus airport codes and terminals; do not show only IATA codes. Use this skill even if Simplifly MCP prompts are not loaded.
+description: Use this skill when a user selects a Simplifly flight option and wants to verify price, continue booking, provide passenger details, create an order, or pay. It covers price verification, passenger and document collection, order creation, payment confirmation, and user-facing booking safety rules. When collecting passenger information, use compact Chinese prompts for name, birth date, gender, nationality, document type and number, phone with country/region code, and email; infer passenger type when clear instead of asking for it. Use this skill even if Simplifly MCP prompts are not loaded.
 ---
 
 # Simplifly Flight Booking
@@ -52,33 +52,43 @@ After verification:
 - Ask whether the user wants to continue booking.
 - Do not show `orderKey`.
 
+Preferred concise style after successful verification:
+
+"F1 实时验价成功，价格还是 ¥1260，余票充足。
+
+航班信息：首都航空 JD5919，2026-05-12 06:55 大兴 PKX -> 10:50 大理 DLU，直飞，经济舱。
+行李：手提 1 件 7kg，无免费托运行李。
+退改规则：工具未返回，暂时无法确认具体费用。"
+
+Only say "价格还是" when the verified price is unchanged. Only mention remaining seats or "余票充足" when the tool result explicitly returns that inventory status. If the tool returns no refund/change details, say those details were not returned instead of estimating them.
+
 If verification fails, briefly explain that the option could not be confirmed and suggest choosing another option or searching again.
 
 ## Passenger Document Rules
 
 Do not collect document information during flight search.
 
-After the user selects a flight and price is verified, remind the user which document is needed before collecting passenger details.
+After the user selects a flight and price is verified, collect the needed document details without over-explaining the route type.
 
 - For international flights, explicitly say: "这趟是国际航班，下单需要护照信息。请确保护照姓名拼音、护照号和有效期准确。"
 - For international flights, ask for `passport` as the travel document type, passport number, and passport expiry date. Do not use vague labels like "证件号码" without saying "护照号码".
-- For domestic mainland China flights, explicitly say: "这趟是国内航班，下单需要乘机人身份证信息。"
-- For domestic mainland China flights, ask for `idcard` as the travel document type when the passenger uses a Chinese resident ID card, and ask for ID card number. Do not omit document type or ID card number.
+- For domestic mainland China flights, do not lead with a separate sentence like "这趟是国内航班，下单需要乘机人身份证信息" unless the user needs clarification. In the collection prompt, ask for "证件类型和号码：身份证或护照等".
+- For domestic mainland China flights, use `idcard` internally when the passenger provides a Chinese resident ID card. Do not omit document type or document number.
 - For Hong Kong, Macau, and Taiwan routes, do not assume a mainland ID card is sufficient. Ask which valid travel document the passenger will use, such as 港澳通行证, 台湾通行证, 回乡证, 台胞证, or passport.
 - If the route type is unclear, ask the user which document they plan to use.
 
-Use ordinary language:
+Use ordinary language for international flights:
 
 "这趟是国际航班，后续下单需要护照信息。现在我先帮你确认实时价格，确认继续预订后再收集证件信息。"
 
 ## Passenger Collection
 
-Collect only the missing fields. For each passenger, collect:
+Collect only the missing fields. For each passenger, collect or infer:
 
 - surname and given names
 - birthday
 - gender
-- passenger type: adult, child, or infant
+- passenger type: adult, child, or infant, inferred from selected passenger counts when clear; ask only when unclear
 - nationality
 - travel document type
 - travel document number
@@ -86,51 +96,49 @@ Collect only the missing fields. For each passenger, collect:
 - phone
 - email
 
-Use natural Chinese text and Markdown bullet lists when asking for passenger information. Do not use fenced code blocks, grey form blocks, raw templates, or generic blank forms. The prompt should look like a human service message, not a data-entry form.
+Use natural Chinese text and a numbered Markdown list when asking for passenger information. The important part is the field content: keep the prompt compact and ask for combined fields rather than splitting every internal API field into separate user-facing questions. Do not use bullet lists for this prompt. Do not use fenced code blocks, grey form blocks, raw templates, or generic blank forms. The prompt should look like a human service message, not a data-entry form.
 
-Preferred style:
+Preferred user-facing collection prompt for a single adult or otherwise clear passenger type:
 
-"这趟是国内航班，后续需要乘机人身份证信息。请把下面信息发我，我再帮你创建订单，但不会自动支付："
+"要继续生成订单的话，请发我这些信息："
 
-- 乘机人姓名
-- 出生日期
-- 性别
-- 乘客类型：成人/儿童/婴儿
-- 国籍
-- 证件类型：中国居民身份证或其他
-- 身份证号码
-- 乘机人手机号
-- 乘机人邮箱
+1. 乘机人姓名：姓、名/拼音或英文名
+2. 出生日期：YYYY-MM-DD
+3. 性别：男/女
+4. 国籍：如中国
+5. 证件类型和号码：身份证或护照等
+6. 手机号和区号：如 +86 138xxxx
+7. 邮箱
+
+"收到后我会先把订单信息汇总给你确认，确认后才会创建订单。"
+
+Do not include "乘客类型：成人" in this prompt when the selected itinerary already has one adult or the passenger type is otherwise clear. Ask passenger type only when the passenger mix is unclear, such as child or infant travelers, multiple passengers with different types, or missing shopping context.
 
 Passenger phone and passenger email are required for each passenger. Do not omit them.
 Passenger travel document type and travel document number are required for each passenger. Do not omit them.
 
 For domestic mainland China flights, use user-facing labels like:
 
-- 乘机人姓名
-- 出生日期
-- 性别
-- 乘客类型
-- 国籍
-- 证件类型（中国居民身份证 / 其他）
-- 身份证号码
-- 乘机人手机号
-- 乘机人邮箱
+1. 乘机人姓名：姓、名/拼音或英文名
+2. 出生日期：YYYY-MM-DD
+3. 性别：男/女
+4. 国籍：如中国
+5. 证件类型和号码：身份证或护照等
+6. 手机号和区号：如 +86 138xxxx
+7. 邮箱
 
-For domestic mainland China flights, do not ask only for name, birthday, gender, phone, and email. Always include ID card number or ask which valid travel document the passenger will use.
+For domestic mainland China flights, do not ask only for name, birthday, gender, phone, and email. Always include "证件类型和号码：身份证或护照等" or an equivalent combined document field.
 
 For international flights, use user-facing labels like:
 
-- 护照英文姓 / surname
-- 护照英文名 / given names
-- 出生日期
-- 性别
-- 乘客类型
-- 国籍
-- 护照号码
-- 护照有效期
-- 乘机人手机号
-- 乘机人邮箱
+1. 护照英文姓 / surname
+2. 护照英文名 / given names
+3. 出生日期：YYYY-MM-DD
+4. 性别：男/女
+5. 国籍：如中国
+6. 护照号码和有效期
+7. 手机号和区号：如 +86 138xxxx
+8. 邮箱
 
 Do not collect only passport number and passport expiry date. Passport data is required for international flights, but the booking still needs the full passenger and contact fields above.
 

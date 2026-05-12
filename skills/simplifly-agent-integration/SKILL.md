@@ -88,21 +88,21 @@ For local Simplifly signed requests, use `scripts/local_sign.sh`.
 
 The script reads local configuration from environment variables:
 
-- `CODE`
-- `API_KEY`
+- `SIMPLIFLY_CODE`
+- `SIMPLIFLY_API_KEY`
 
 It generates:
 
 - `TS`: current UTC Unix timestamp in seconds, unless `TS` is already set
-- `SIG`: SHA1 hex digest of `${CODE}${TS}${API_KEY}`
+- `SIG`: SHA1 hex digest of `${SIMPLIFLY_CODE}${TS}${SIMPLIFLY_API_KEY}`
 
 Example local invocation:
 
 ```bash
-CODE="your-code" API_KEY="your-api-key" scripts/local_sign.sh
+SIMPLIFLY_CODE="your-code" SIMPLIFLY_API_KEY="your-api-key" scripts/local_sign.sh
 ```
 
-Do not place real `CODE` or `API_KEY` values in `SKILL.md`, examples, logs, or user-facing messages. Do not expose raw signatures to normal users unless the user is explicitly doing technical integration work.
+Do not place real `SIMPLIFLY_CODE` or `SIMPLIFLY_API_KEY` values in `SKILL.md`, examples, logs, or user-facing messages. Do not expose raw signatures to normal users unless the user is explicitly doing technical integration work.
 
 It is safe to show user-facing business information when returned:
 

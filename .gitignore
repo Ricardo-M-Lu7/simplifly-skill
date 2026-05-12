@@ -1,2 +1,17 @@
 .DS_Store
 .idea/
+
+# Local secrets and environment overrides
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Local logs and temporary output
+*.log
+tmp/
+temp/
